@@ -7,9 +7,11 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+import requests
 import os
 import json
 from typing import List
+from pathlib import Path
 
 
 load_dotenv()
@@ -32,8 +34,18 @@ if index_name not in pc.list_indexes().names():
 index = pc.Index(index_name)
 
 # Load and process documents
-file_path = "D:/AGENTIC AI/New folder/rag_project/TechFlow_Solutions.pdf"
-loader = PyPDFLoader(file_path)
+github_url = "https://raw.githubusercontent.com/Mrkhan9914626/customer_support_AI_Assistant/master/TechFlow_Solutions.pdf"
+project_root = Path(__file__).parent
+file_path = project_root / "temp_file.pdf"
+
+
+response = requests.get(github_url , timeout=10)
+if response.status_code == 200:
+    with open(file_path, "wb") as f:
+        f.write(response.content)
+else:
+    raise Exception(f"Failed to download PDF from GitHub. Status code: {response.status_code}")
+loader = PyPDFLoader(str(file_path))
 docs = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(

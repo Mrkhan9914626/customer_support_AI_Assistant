@@ -330,7 +330,7 @@ if user_input:
             for char in response:
                 displayed_text += char
                 message_placeholder.markdown(displayed_text + "▌")
-                time.sleep(0.01)
+                time.sleep(0.001)
 
             message_placeholder.markdown(response)
 
